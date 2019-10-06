@@ -1,0 +1,2 @@
+int loadParamsFromFile(char *sfdcLogin,char *sfdcPassword,char *sfdcSecToken,char *sfdcOAuthClientId,char *sfdcClientSecret);
+int saveParamsToFile(String sfdcLogin,String sfdcPassword,String sfdcSecToken,String sfdcOAuthClientId,String sfdcClientSecret);
