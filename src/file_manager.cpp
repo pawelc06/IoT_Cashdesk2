@@ -57,6 +57,8 @@ int loadParamsFromFile(char *sfdcLogin,char *sfdcPassword,char *sfdcSecToken,cha
   else
   {
     Serial.println("failed to mount FS");
+    Serial.println("Formattinf SPIFSS...");
+    bool formatted = SPIFFS.format();
     return -1;
   }
   //end read

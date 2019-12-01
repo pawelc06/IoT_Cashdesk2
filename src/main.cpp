@@ -29,12 +29,23 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
+bool areCredentialsFilled(){
+  
+  
+  if(strlen(sfdcLogin)>0 && strlen(sfdcPassword)>0 && strlen(sfdcSecToken)>0 && strlen(sfdcOAuthClientId)>0 && strlen(sfdcClientSecret)>0){
+    return true; 
+  } else { 
+    return false;
+  }
+}
+
 
 WiFiClientSecure client;
 const char*  loginServer = "login.salesforce.com";  // Server URL
 
 
 void setup() {
+  bool credentialsLoaded=false;
   Serial.begin(38400);
   
   Serial.println(F("Start"));
@@ -46,7 +57,13 @@ void setup() {
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
-  display.display();
+  display.clearDisplay();
+
+  display.setTextSize(1);             // Normal 1:1 pixel scale
+  display.setTextColor(WHITE);        // Draw white text
+  display.setCursor(0,0);             // Start at top-left corner
+  display.println(F("Starting..."));
+
   Serial.println(F("Display configured"));
   
 
@@ -56,6 +73,7 @@ void setup() {
 
   if(!loadParamsFromFile(sfdcLogin,sfdcPassword,sfdcSecToken,sfdcOAuthClientId,sfdcClientSecret)){
 
+    credentialsLoaded = true;
     WiFiManagerParameter sfdc_login("sfdcLogin", "sfdcLogin", sfdcLogin, 30);
     WiFiManagerParameter sfdc_pass("sfdcPassword", "sfdcPassword", sfdcPassword, 30);
     WiFiManagerParameter sfdc_sec_token("sfdcSecToken", "sfdcSecToken", sfdcSecToken, 30);
@@ -113,28 +131,33 @@ void setup() {
   /**********************************/
     
     //if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
+  Serial.println("Connected to WiFi access point!");
+  display.println("Connected to WiFi!");
+  display.println(WiFi.localIP()); 
+  display.display();
 
-  
+
+  if(credentialsLoaded && areCredentialsFilled()){
     Serial.println("\nStarting connection to server...");
-  if (!client.connect(loginServer, 443))
-    Serial.println("Connection failed!");
-  else {
-    Serial.println("Logging to Salesforce...");
-    
-    loginAndGetToken(sfdcLogin , sfdcPassword, instanceURL, token, sfdcSecToken,sfdcOAuthClientId,sfdcClientSecret);
-    Serial.print("Instance URL:");
-    Serial.println(instanceURL);
+    if (!client.connect(loginServer, 443))
+      Serial.println("Connection failed!");
+    else {
+      Serial.println("Logging to Salesforce...");
+      
+      loginAndGetToken(sfdcLogin , sfdcPassword, instanceURL, token, sfdcSecToken,sfdcOAuthClientId,sfdcClientSecret);
+      Serial.print("Instance URL:");
+      Serial.println(instanceURL);
 
-    Serial.print("Token:");
-    Serial.println(token);
+      Serial.print("Token:");
+      Serial.println(token);
 
-    String strToken = String(token);
-    String strInstanceURL = String(instanceURL);
+      String strToken = String(token);
+      String strInstanceURL = String(instanceURL);
 
-    createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
-    
-  }
+      createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
+      
+    }
+  }  
   
 }
 
@@ -143,3 +166,4 @@ void loop() {
     server.handleClient();
     
 }
+
