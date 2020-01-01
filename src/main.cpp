@@ -1,27 +1,7 @@
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
 #include "main.h"
+#include "scanner.h"
 
-#include <WiFiClientSecure.h>
-#include <MFRC522.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-#include <SPI.h>
-#include "sfdc.h"
-#include "file_manager.h"
-
-char instanceURL[512];
-char token[512];
-
-//flag for saving data
-bool shouldSaveConfig = false;
 
 //callback notifying us of the need to save config
 void saveConfigCallback () {
@@ -42,11 +22,14 @@ bool areCredentialsFilled(){
 
 WiFiClientSecure client;
 const char*  loginServer = "login.salesforce.com";  // Server URL
-
+String strToken;
+String strInstanceURL;
 
 void setup() {
   bool credentialsLoaded=false;
   Serial.begin(38400);
+
+  Serial2.begin(38400);
   
   Serial.println(F("Start"));
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -151,10 +134,10 @@ void setup() {
       Serial.print("Token:");
       Serial.println(token);
 
-      String strToken = String(token);
-      String strInstanceURL = String(instanceURL);
+      strToken = String(token);
+      strInstanceURL = String(instanceURL);
 
-      createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
+      //createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
       
     }
   }  
@@ -162,7 +145,17 @@ void setup() {
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
+    char barcode[32];
+    
+    if(handleBarcodeScanner(barcode)){
+      display.clearDisplay();
+      display.setCursor(0,32);
+      display.println("Barcode:"); 
+      display.println(barcode); 
+      display.display();
+      createCustomerVisitEvent("123456",barcode,false, strInstanceURL,strToken);
+    }
+
     server.handleClient();
     
 }
