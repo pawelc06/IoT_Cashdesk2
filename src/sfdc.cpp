@@ -18,6 +18,7 @@ int loginAndGetToken(String user, String password, char* instanceURL,char* token
   String loginPayload = "grant_type=password&client_id="+clientId+"&client_secret="+clientSecret+"&username=" + user+"&password="+password+securityToken;
   const char host[]="login.salesforce.com";
   String path = "/services/oauth2/token";
+  const char* errVal;
 
   //strcpy(host,"login.salesforce.com");
   
@@ -87,6 +88,13 @@ int loginAndGetToken(String user, String password, char* instanceURL,char* token
         DeserializationError error = deserializeJson(doc, line);
         if (error)
           return -1;
+
+        if(errVal=doc["error"]){
+          Serial.print("OAuth error:");
+          Serial.println(errVal);
+          return -2;
+        }
+
         const char* tokenJSON = doc["access_token"];
         const char* instanceURLJSON = doc["instance_url"];
 

@@ -48,7 +48,7 @@ char sfdcLogin[30];
 char sfdcPassword[30];
 char sfdcSecToken[30];
 char sfdcOAuthClientId[90];
-char sfdcClientSecret[30];
+char sfdcClientSecret[80];
 
 String strSfdcLogin; 
 String strSfdcPassword;

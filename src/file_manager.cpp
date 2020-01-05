@@ -42,6 +42,8 @@ int loadParamsFromFile(char *sfdcLogin,char *sfdcPassword,char *sfdcSecToken,cha
           strcpy(sfdcSecToken, doc1["sfdcSecToken"]);
           strcpy(sfdcOAuthClientId, doc1["sfdcOAuthClientId"]);
           strcpy(sfdcClientSecret, doc1["sfdcClientSecret"]);
+
+          
         }
         else
         {

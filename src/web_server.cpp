@@ -97,7 +97,7 @@ webpage="<!DOCTYPE html><html>";
               webpage+="<p>SFDC Password:<br/><input type=\"password\" name=\"sfdcPassword\" value=\"" + strSfdcPassword + "\" size=\"30\"></p>";
               webpage+="<p>SFDC Security token:<br/><input type=\"text\" name=\"sfdcSecToken\" value=\"" + strSfdcSecToken + "\" size=\"30\"></p>";
               webpage+="<p>SFDC Client Id:<br/><input type=\"text\" name=\"sfdcOAuthClientId\" value=\"" + strSfdcOAuthClientId  + "\" size=\"30\" maxlength=\"90\"></p>";
-              webpage+="<p>SFDC Client Secret:<br/><input type=\"text\" name=\"sfdcClientSecret\" value=\"" + strSfdcClientSecret + "\" size=\"30\"></p>";
+              webpage+="<p>SFDC Client Secret:<br/><input type=\"text\" name=\"sfdcClientSecret\" value=\"" + strSfdcClientSecret + "\" size=\"30\" maxlength=\"80\"></p>";
 
               
               webpage+="<input class=\"button\" type=\"submit\" value=\"Update\">";

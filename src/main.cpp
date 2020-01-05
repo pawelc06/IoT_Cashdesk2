@@ -61,7 +61,9 @@ void setup() {
     WiFiManagerParameter sfdc_pass("sfdcPassword", "sfdcPassword", sfdcPassword, 30);
     WiFiManagerParameter sfdc_sec_token("sfdcSecToken", "sfdcSecToken", sfdcSecToken, 30);
     WiFiManagerParameter sfdc_oauth_client_id("sfdcOAuthClientId", "sfdcOAuthClientId", sfdcOAuthClientId, 90);
-    WiFiManagerParameter sfdc_oauth_client_secret("sfdcClientSecret", "sfdcClientSecret", sfdcClientSecret, 30);
+    WiFiManagerParameter sfdc_oauth_client_secret("sfdcClientSecret", "sfdcClientSecret", sfdcClientSecret, 80);
+
+
  
     //set config save notify callback
     wifiManager.setSaveConfigCallback(saveConfigCallback);
@@ -88,6 +90,15 @@ void setup() {
     strcpy(sfdcSecToken, sfdc_sec_token.getValue());
     strcpy(sfdcOAuthClientId, sfdc_oauth_client_id.getValue());
     strcpy(sfdcClientSecret, sfdc_oauth_client_secret.getValue());
+
+        Serial.print("!!!!!!!!!!!!! sfdc_oauth_client_id.getValue():");
+          Serial.println(sfdc_oauth_client_id.getValue());
+
+          Serial.print("!!!!!!!!!!!!! LEN:");
+          Serial.println(sfdc_oauth_client_id.getValueLength());
+
+          Serial.print("!!!!!!!!!!!!! sfdcOAuthClientId:");
+          Serial.println(sfdcOAuthClientId);
   }
 
   
@@ -120,6 +131,9 @@ void setup() {
   display.display();
 
 
+
+
+
   if(credentialsLoaded && areCredentialsFilled()){
     Serial.println("\nStarting connection to server...");
     if (!client.connect(loginServer, 443))
@@ -127,20 +141,48 @@ void setup() {
     else {
       Serial.println("Logging to Salesforce...");
       
-      loginAndGetToken(sfdcLogin , sfdcPassword, instanceURL, token, sfdcSecToken,sfdcOAuthClientId,sfdcClientSecret);
-      Serial.print("Instance URL:");
-      Serial.println(instanceURL);
+      if(loginAndGetToken(sfdcLogin , sfdcPassword, instanceURL, token, sfdcSecToken,sfdcOAuthClientId,sfdcClientSecret)>-1){
+        Serial.print("Instance URL:");
+        Serial.println(instanceURL);
 
-      Serial.print("Token:");
-      Serial.println(token);
+        Serial.print("Token:");
+        Serial.println(token);
 
-      strToken = String(token);
-      strInstanceURL = String(instanceURL);
+        strToken = String(token);
+        strInstanceURL = String(instanceURL);
 
-      //createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
+        //createCustomerVisitEvent("123456","334455",false, strInstanceURL,strToken);
+       } else {
+         Serial.println("SFDC Login error!");
+       }
+    
       
     }
-  }  
+  } else {
+    Serial.print("credentialsLoaded:");
+    Serial.println(credentialsLoaded);
+
+    Serial.print("areCredentialsFilled():");
+    Serial.println(areCredentialsFilled());
+
+    Serial.print("sfdcLogin:");
+    Serial.println(sfdcLogin);    
+
+    Serial.print("sfdcPassword:");
+    Serial.println(sfdcPassword);  
+
+    Serial.print("sfdcSecToken:");
+    Serial.println(sfdcSecToken);  
+
+    Serial.print("sfdcOAuthClientId:");
+    Serial.println(sfdcOAuthClientId);  
+
+    Serial.print("sfdcClientSecret:");
+    Serial.println(sfdcClientSecret);    
+
+  } 
+
+  Serial.println("Completed setup, entering loop...");
   
 }
 
